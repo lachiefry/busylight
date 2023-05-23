@@ -39,6 +39,10 @@ class Blynclight(HIDLight):
             self.command.off = 0
             self.color = color
 
+    def play_sound(self):
+        with self.batch_update():
+            self.command.music = 1
+
     @property
     def red(self) -> int:
         return self.command.red
@@ -63,9 +67,21 @@ class Blynclight(HIDLight):
     def blue(self, new_value: int) -> None:
         self.command.blue = new_value
 
+    @property
+    def play(self) -> bool:
+        return self.command.play
+    
+    @play.setter
+    def play(self, new_value: bool) -> None:
+        self.command.play = new_value
+
     def __bytes__(self) -> bytes:
         return self.command.bytes
 
     def reset(self) -> None:
         with self.batch_update():
             self.command.reset()
+    
+    @property          
+    def play_sound(self): 
+        return self.command.music

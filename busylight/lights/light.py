@@ -419,6 +419,12 @@ class Light(abc.ABC, TaskableMixin):
     def off(self) -> None:
         """Turn the light off."""
         self.on((0, 0, 0))
+        
+    def play_sound_direct(self) -> None:
+        """Play sound directly on the device."""
+        with self.batch_update():
+            self.sound = 1
+        
 
     @property
     def name(self) -> str:
@@ -484,6 +490,15 @@ class Light(abc.ABC, TaskableMixin):
     @red.setter
     def red(self, new_value: int) -> None:
         self._red = new_value
+
+    @property
+    def play(self) -> int:
+        """Sound intensity value."""
+        return getattr(self, "play")
+
+    @play.setter
+    def play(self, new_value: int) -> None:
+        self._play = new_value
 
     @property
     def green(self) -> int:

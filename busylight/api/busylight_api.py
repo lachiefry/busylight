@@ -124,6 +124,13 @@ class BusylightAPI(FastAPI):
             light.cancel_tasks()
             light.add_task(effect.name, effect)
 
+    def play_sound(self, light_id: int = None) -> None:
+        lights = self.lights if light_id is None else [self.lights[light_id]]
+
+        for light in lights:
+            if light != "":
+                light.play_sound_direct()
+
     def get(self, path: str, **kwargs) -> Callable:
         self.endpoints.append(path)
 
@@ -623,4 +630,11 @@ async def pulse_lights(
         "speed": speed,
         "rgb": rgb,
         "dim": dim,
+    }
+
+@busylightapi.get("/play_sound")
+async def play_sound():
+    busylightapi.play_sound()
+    return {
+        "action": "Playing Sound",
     }
