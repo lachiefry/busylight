@@ -5,6 +5,7 @@ from typing import Dict, Tuple
 
 from ..hidlight import HIDLight
 from ..light import LightInfo
+import time
 
 from ._blynclight import Command
 
@@ -41,7 +42,21 @@ class Blynclight(HIDLight):
 
     def play_sound(self):
         with self.batch_update():
-            self.command.music = 1
+            self.music = 1
+            self.volume = 20
+            self.mute = 0
+            self.repeat = 0
+            self.play = 1
+        time.sleep(5)
+        with self.batch_update():
+            self.music = 0
+            self.volume = 0
+            self.mute = 0
+            self.repeat = 0
+            self.play = 0
+        
+
+    
 
     @property
     def red(self) -> int:
@@ -68,12 +83,44 @@ class Blynclight(HIDLight):
         self.command.blue = new_value
 
     @property
-    def play(self) -> bool:
+    def play(self) -> bytes:
         return self.command.play
     
     @play.setter
-    def play(self, new_value: bool) -> None:
+    def play(self, new_value: int) -> None:
         self.command.play = new_value
+
+    @property
+    def mute(self) -> bytes:
+        return self.command.mute
+        
+    @mute.setter
+    def mute(self, new_value: int) -> None:
+        self.command.mute = new_value
+    
+    @property
+    def volume(self) -> bytes:
+        return self.command.volume
+        
+    @volume.setter
+    def volume(self, new_value: int) -> None:
+        self.command.volume = new_value
+    
+    @property
+    def music(self) -> bytes:
+        return self.command.music
+    
+    @music.setter
+    def music(self, new_value: int) -> None:
+        self.command.music = new_value
+        
+    @property
+    def repeat(self) -> bytes:
+        return self.command.repeat
+    
+    @repeat.setter
+    def repeat(self, new_value: int) -> None:
+        self.command.repeat = new_value
 
     def __bytes__(self) -> bytes:
         return self.command.bytes

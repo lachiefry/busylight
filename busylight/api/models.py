@@ -25,5 +25,8 @@ class LightDescription(BaseModel):
     rgb: Tuple[int, int, int]
 
 
+class LightOperationSound(BaseModel):
+    light_id: int
+
 class EndPoint(BaseModel):
     path: str

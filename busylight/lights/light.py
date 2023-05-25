@@ -28,7 +28,7 @@ from typing import (
     Type,
     Union,
 )
-
+import time
 from loguru import logger
 
 from .exceptions import (
@@ -409,6 +409,7 @@ class Light(abc.ABC, TaskableMixin):
         """Writes the software state to the device when the context manager exits."""
         yield
         self.update()
+        
 
     def on(self, color: Tuple[int, int, int]) -> None:
         """Activate the light with the supplied red, green, blue color tuple."""
@@ -423,8 +424,25 @@ class Light(abc.ABC, TaskableMixin):
     def play_sound_direct(self) -> None:
         """Play sound directly on the device."""
         with self.batch_update():
-            self.sound = 1
+            self.on((255, 255, 0))
+            self.music = 1
+            self.volume = 20
+            self.mute = 0
+            self.repeat = 0
+            self.play = 1
         
+        time.sleep(5)
+        self.sound_reset()
+            
+    def sound_reset(self) -> None:
+        """Reset sound settings."""
+        with self.batch_update():
+            self.off()
+            self.music = 0
+            self.volume = 0
+            self.mute = 0
+            self.repeat = 0
+            self.play = 0
 
     @property
     def name(self) -> str:
@@ -494,11 +512,64 @@ class Light(abc.ABC, TaskableMixin):
     @property
     def play(self) -> int:
         """Sound intensity value."""
-        return getattr(self, "play")
+        return getattr(self, "_play")
 
     @play.setter
     def play(self, new_value: int) -> None:
-        self._play = new_value
+        try:
+            self._play = new_value
+        except Exception as error:
+            raise ValueError(f"unable to set color {new_value!r}: {error}") from None
+
+
+    @property
+    def mute(self) -> int:
+        """Sound intensity value."""
+        return getattr(self, "_mute")
+    
+    @mute.setter
+    def mute(self, new_value: int) -> None:
+        try:
+            self._mute = new_value
+        except Exception as error:
+            raise ValueError(f"unable to set color {new_value!r}: {error}") from None
+   
+    @property
+    def volume(self) -> int:
+        """Sound intensity value."""
+        return getattr(self, "_volume")
+    
+    @volume.setter
+    def volume(self, new_value: int) -> None:
+        try:
+            self._volume = new_value
+        except Exception as error:
+            raise ValueError(f"unable to set color {new_value!r}: {error}") from None
+
+    @property
+    def repeat(self) -> int:
+        """Sound intensity value."""
+        return getattr(self, "_repeat")
+    
+    @repeat.setter
+    def repeat(self, new_value: int) -> None:
+        try:
+            self._repeat = new_value
+        except Exception as error:
+            raise ValueError(f"unable to set color {new_value!r}: {error}") from None
+
+
+    @property
+    def music(self) -> int:
+        """Sound intensity value."""
+        return getattr(self, "_music")
+    
+    @music.setter
+    def music(self, new_value: int) -> None:
+        try:
+            self._music = new_value
+        except Exception as error:
+            raise ValueError(f"unable to set color {new_value!r}: {error}") from None
 
     @property
     def green(self) -> int:
